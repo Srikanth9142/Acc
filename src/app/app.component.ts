@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from 'src/app/services/audio-recording.service';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import { DataService } from './services/data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,8 +12,8 @@ export class AppComponent implements OnDestroy {
   isRecording = false;
   recordedTime;
   blobUrl;
-
-  constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer) {
+  blob;
+  constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer,private dataService:DataService) {
 
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -24,8 +24,12 @@ export class AppComponent implements OnDestroy {
     });
 
     this.audioRecordingService.getRecordedBlob().subscribe((data) => {
+      this.blob = data.blob;
       this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data.blob));
     });
+    
+
+
   }
 
   startRecording() {
@@ -51,6 +55,11 @@ export class AppComponent implements OnDestroy {
 
   clearRecordedData() {
     this.blobUrl = null;
+  }
+  sendAudio(){
+    this.dataService.saveAudio(this.blob).subscribe(()=>{
+  
+    });
   }
 
   ngOnDestroy(): void {
