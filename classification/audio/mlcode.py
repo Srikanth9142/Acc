@@ -21,9 +21,10 @@ nfilt = 40
 num_ceps = 12
 cep_lifter =22
 
+
 #Returns a duration of audio file which needs to send every 3 seconds audio to mfcc
 def length_audio(file_name):
-    file_path='F:/Projects/accentclassification/media/'+str(file_name)
+    file_path='F:/Projects/angular/acc/classification/media/audio/'+str(file_name)
     with contextlib.closing(wave.open(file_path,'r')) as f:
         frames = f.getnframes()
         rate = f.getframerate()
@@ -31,7 +32,7 @@ def length_audio(file_name):
     return int(duration)
 
 def create_mfcc(file_name,start_point):
-    file_path = 'F:/Projects/speech/speeches mail/'+str(file_name)
+    file_path = 'F:/Projects/angular/acc/classification/media/audio/'+str(file_name)
     sample_rate, signal = scipy.io.wavfile.read(file_path)
     signal = signal[start_point:int(start_point+3 * sample_rate)]   #framing to 3 seconds
     emphasized_signal = numpy.append(signal[0], signal[1:] - pre_emphasis * signal[:-1])
@@ -86,6 +87,46 @@ def create_model():
 
     model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
     return model
+def predictAccent(targ):
+    accents = ['Indian','US-Male','US-Femlae','British','Mild Generic Indian','Mild Hindi','Mild Tamil','Neutral Indian','Strong Bengali','Strong Hindi','Strong Tamil','Strong Telugu']
+    np.set_printoptions(formatter={'float_kind':'{:.1f}'.format})
+    l=[]
+    out_len = len(targ)
+    in_len = len(targ[0])
+    for i in range(in_len):
+        sumi = 0
+        for j in range(out_len):
+            sumi+=targ[j][i]
+        l.append(sumi)
+    maximum = -1
+    max_ind = -1
+    for i in range(len(l)):
+        if(l[i] > maximum):
+            maximum = l[i]
+            max_ind = i+1
+    print("Accent: ",accents[max_ind-2])
+    for i in l:
+        if i!=0:
+            per = (i/float(out_len))*100
+            if(per>1):
+                print("{1:.2f}% -> {0}".format(accents[l.index(i)-1],per))
+
+def predictAudio(filename):
+    n = filename
+    mfcc=[] 
+    target=[]
+    mfcc_len=length_audio(n)
+    for i in range(0,mfcc_len,3):
+        mfcc = create_mfcc(n,i)
+        mfcc = np.asarray(mfcc)
+        mfcc = np.reshape(mfcc,(len(mfcc)*len(mfcc[0])))
+        target.append(mfcc)
+    target=np.asarray(target)
+    md = create_model()
+    targ=md.predict(target)
+    #predictAccent(targ)
+    print(targ)
+
 
 
 

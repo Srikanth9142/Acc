@@ -5,6 +5,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import AudioModel
 from audio.serializers import PredictionSerializer
+from audio.mlcode import create_model
+from audio.mlcode import predictAccent
+from audio.mlcode import predictAudio
 # Create your views here.
 """
 handle binary audio file upload that rest server is unable to parse by default
@@ -23,7 +26,9 @@ class SaveAttemptAudioView(APIView):
     def post(self, request):
         try:
             attempt = AudioModel.objects.create_attempt(request.data)
-            # do your predictions
+            name = request.data
+            create_model()
+            predictAudio(name)
             # update attempt model with the prediction and save it
             # create a serializer for prediction
             # and return the prediction
