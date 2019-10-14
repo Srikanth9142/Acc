@@ -77,20 +77,24 @@ def create_mfcc(file_name,start_point):
     
     return mfcc
 
+
 def create_model():
     model = keras.Sequential([
     keras.layers.Flatten(input_shape=(7176,)),
     keras.layers.Dense(40,activation=tf.nn.relu),
     keras.layers.Dense(10,activation=tf.nn.relu),
     keras.layers.Dense(13, activation=tf.nn.softmax)
-    ]) #idi run chesinappudu warning chopistadi
+    ])
 
     model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
     return model
+
+
 def predictAccent(targ):
     accents = ['Indian','US-Male','US-Femlae','British','Mild Generic Indian','Mild Hindi','Mild Tamil','Neutral Indian','Strong Bengali','Strong Hindi','Strong Tamil','Strong Telugu']
     np.set_printoptions(formatter={'float_kind':'{:.1f}'.format})
     l=[]
+    str_acc=""
     out_len = len(targ)
     in_len = len(targ[0])
     for i in range(in_len):
@@ -105,11 +109,13 @@ def predictAccent(targ):
             maximum = l[i]
             max_ind = i+1
     print("Accent: ",accents[max_ind-2])
+    str_acc+=accents[max_ind-2]
     for i in l:
         if i!=0:
             per = (i/float(out_len))*100
             if(per>1):
                 print("{1:.2f}% -> {0}".format(accents[l.index(i)-1],per))
+    return str_acc
 
 def predictAudio(filename):
     n = filename
@@ -123,10 +129,10 @@ def predictAudio(filename):
         target.append(mfcc)
     target=np.asarray(target)
     md = create_model()
+    md.load_weights('C:/Users/Mypc/Downloads/accent classification.h5')
     targ=md.predict(target)
-    #predictAccent(targ)
-    print(targ)
-
+    acc_str = predictAccent(targ)
+    return acc_str
 
 
 

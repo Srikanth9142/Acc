@@ -9,4 +9,8 @@
     <source [src]="blobUrl" type="audio/webm">
   </audio>
   </div>
+  <div>
+  <button (click)="getprediction()">Get prediction</button>
+  <p>{{ predictions[predictions.length-1] }}</p>
+  </div>
 </div>

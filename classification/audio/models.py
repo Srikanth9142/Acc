@@ -22,14 +22,15 @@ class AudioFileField(models.FileField):
 class AudioManager(models.Manager):
     def create_attempt(self, blob):
         attempt = AudioModel()
-        attempt.audio_file = SimpleUploadedFile(datetime.now().strftime("%d%m%y%H%M%S.wav"), blob)
+        file_name = datetime.now().strftime("%d%m%y%H%M%S.wav")
+        attempt.audio_file = SimpleUploadedFile(file_name, blob)
         attempt.save()
-        return attempt
+        return attempt,file_name
 
 class AudioModel(models.Model):
    audio_file = AudioFileField(null=True, upload_to='audio/')
    timestamp = models.DateTimeField(auto_now_add=True, null=True)
-   prediction = models.CharField(max_length=50,null=True)
+   prediction = models.CharField(max_length=70,null=True)
    response = models.BooleanField(default = False)
    #TODO: Store user response also
    objects = AudioManager()

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse;
 from rest_framework.parsers import BaseParser
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from .models import AudioModel
 from audio.serializers import PredictionSerializer
@@ -20,21 +21,39 @@ class AudioParser(BaseParser):
 """
 Save user attempt for a question
 """
+Audioid=0
+Audioid1=0
 class SaveAttemptAudioView(APIView):
     parser_classes = (AudioParser,)
 
     def post(self, request):
         try:
-            attempt = AudioModel.objects.create_attempt(request.data)
-            name = request.data
-            create_model()
-            predictAudio(name)
-            # update attempt model with the prediction and save it
+            attempt,name = AudioModel.objects.create_attempt(request.data)
+            accent_str = predictAudio(name)
+            attempt.prediction=accent_str
+            attempt.save()
+            global Audioid
+            Audioid = attempt.pk
+            Audioid1 = attempt.pk
+            print("Audio Id :",Audioid)
+            print("Accent is as :",attempt.prediction)
             # create a serializer for prediction
             # and return the prediction
-            return Response({'course': 0}, status=201)
+            return Response({'prediction':0}, status=201)
         except Exception as e:
             print(e)
             return Response({"result":"error"}, status=400)
 def save(request):
     return HttpResponse("hai this will save!!")
+
+def printPredict(request):
+    global Audioid1
+    pr = AudioModel.objects.filter(pk=Audioid1).values('prediction')
+    print("Printing in printPredict")
+    print(Audioid1)
+    return HttpResponse("see terminal")
+
+class PredictionView(generics.ListCreateAPIView):
+    queryset = AudioModel.objects.all()
+    serializer_class = PredictionSerializer
+

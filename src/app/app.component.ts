@@ -2,6 +2,9 @@ import { Component, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from 'src/app/services/audio-recording.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from './services/data.service';
+import { Prediction } from 'src/app/models/prediction';
+import { take } from 'rxjs/operators';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,6 +16,8 @@ export class AppComponent implements OnDestroy {
   recordedTime;
   blobUrl;
   blob;
+  predictions : Prediction[];
+
   constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer,private dataService:DataService) {
 
     this.audioRecordingService.recordingFailed().subscribe(() => {
@@ -64,6 +69,13 @@ export class AppComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.abortRecording();
+  }
+
+  getprediction():void{
+    this.dataService.get_prediction().pipe(take(1)).subscribe(d =>{
+      this.predictions = d;
+    })
+
   }
 
 }
