@@ -24,7 +24,7 @@ cep_lifter =22
 
 #Returns a duration of audio file which needs to send every 3 seconds audio to mfcc
 def length_audio(file_name):
-    file_path='F:/Projects/angular/acc/classification/media/audio/'+str(file_name)
+    file_path='./media/audio/'+str(file_name)
     with contextlib.closing(wave.open(file_path,'r')) as f:
         frames = f.getnframes()
         rate = f.getframerate()
@@ -32,7 +32,7 @@ def length_audio(file_name):
     return int(duration)
 
 def create_mfcc(file_name,start_point):
-    file_path = 'F:/Projects/angular/acc/classification/media/audio/'+str(file_name)
+    file_path = './media/audio/'+str(file_name)
     sample_rate, signal = scipy.io.wavfile.read(file_path)
     signal = signal[start_point:int(start_point+3 * sample_rate)]   #framing to 3 seconds
     emphasized_signal = numpy.append(signal[0], signal[1:] - pre_emphasis * signal[:-1])
@@ -91,8 +91,7 @@ def create_model():
 
 
 def predictAccent(targ):
-    accents = ['Indian','US-Male','US-Femlae','British','Mild Generic Indian','Mild Hindi','Mild Tamil','Neutral Indian','Strong Bengali','Strong Hindi','Strong Tamil','Strong Telugu']
-    np.set_printoptions(formatter={'float_kind':'{:.1f}'.format})
+    accents = ['Indian','US-Male','US-Female','British','Mild Generic Indian','Mild Hindi','Mild Tamil','Neutral Indian','Strong Bengali','Strong Hindi','Strong Tamil','Strong Telugu']
     l=[]
     str_acc=""
     out_len = len(targ)
@@ -109,12 +108,17 @@ def predictAccent(targ):
             maximum = l[i]
             max_ind = i+1
     print("Accent: ",accents[max_ind-2])
+    str_acc+="Your Accent: "
     str_acc+=accents[max_ind-2]
+    str_acc+="\n"
     for i in l:
         if i!=0:
             per = (i/float(out_len))*100
             if(per>1):
-                print("{1:.2f}% -> {0}".format(accents[l.index(i)-1],per))
+                per = "{:.2f}".format(per)+"%"
+                str_acc+=accents[l.index(i)-1]+" -->"
+                str_acc+=per
+                str_acc+="\n"
     return str_acc
 
 def predictAudio(filename):
@@ -129,11 +133,10 @@ def predictAudio(filename):
         target.append(mfcc)
     target=np.asarray(target)
     md = create_model()
-    md.load_weights('C:/Users/Mypc/Downloads/accent classification.h5')
+    md.load_weights('./Mlmodel/accent classification.h5')
     targ=md.predict(target)
     acc_str = predictAccent(targ)
     return acc_str
-
 
 
 

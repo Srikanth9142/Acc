@@ -1,8 +1,7 @@
 export class Prediction{
     name : string;
-
     toString():string{
-        return `Your Accent is:${this.name}`;
+        return `${this.name}`;
     }
 
     constructor(name:string){

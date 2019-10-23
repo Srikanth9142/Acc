@@ -1,16 +1,52 @@
-<div>
-  <button class="start-button" *ngIf="!isRecording && !blobUrl" (click)="startRecording()">Start Recording</button>
-  <button class="stop-button" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">Stop Recording</button>
-  <button class="cancel-button" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
-  <button class="send-button" (click)="sendAudio()">Send data</button>
-  <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
-  <div>
-  <audio *ngIf="!isRecording && blobUrl"  controls>
-    <source [src]="blobUrl" type="audio/webm">
-  </audio>
-  </div>
-  <div>
-  <button (click)="getprediction()">Get prediction</button>
-  <p>{{ predictions[predictions.length-1] }}</p>
-  </div>
-</div>
+<mat-toolbar color="primary">
+  <span>Accent Classification</span>
+</mat-toolbar>
+<p>Select an Accent in which you are going to speak Recording Section will only appear after selection!</p>
+  <mat-form-field class="accent-select-class" *ngIf="!selected">
+   <mat-label>Select an Accent</mat-label>
+  <mat-select [(value)]="selected">
+    <mat-option *ngFor="let accent of Accents" value={{accent}}>{{ accent }}</mat-option>
+  </mat-select>
+  </mat-form-field>
+  <p *ngIf="selected">You have Selected:<strong> {{ selected }}</strong></p>
+  <button mat-raised-button color="Accent" id="accentbutton" (click)="selected=0;predictionValues=false" *ngIf="selected">Change Accent</button>
+<mat-card class="example-class-recording" *ngIf="selected">
+  <mat-card-header>
+  <div mat-card-avatar class="example-class-recording-image"></div>
+    <mat-card-title>Recoding Section</mat-card-title>
+    <mat-card-subtitle>Your audio will be recorded here!</mat-card-subtitle>
+  </mat-card-header>
+      <button mat-raised-button color="primary" *ngIf="!isRecording && !blobUrl && selected" (click)="startRecording()">Start Recording</button>
+      <button mat-raised-button color="warn" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">Stop Recording</button>
+      <button mat-flat-button color="Accent" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
+      <button mat-raised-button  *ngIf="blobUrl && !send_blob" (click)="sendAudio()">Send data</button>
+      <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
+      <div>
+      <audio *ngIf="!isRecording && blobUrl"  controls>
+      <source [src]="blobUrl" type="audio/webm">
+    </audio></div>
+    <mat-card-actions>
+   <button mat-raised-button color="primary" (click)="getprediction()" *ngIf="blobUrl">Generate Report</button>
+   <button mat-raised-button color="primary" (click)="getReport()" *ngIf="blobUrl">View Report</button>
+  </mat-card-actions>
+</mat-card>
+<mat-card class="example-class" *ngIf="selected">
+  <mat-card-header>
+  <div mat-card-avatar class="example-class-image"></div>
+    <mat-card-title>Passage Section</mat-card-title>
+    <mat-card-subtitle>Read the Passage</mat-card-subtitle>
+  </mat-card-header>
+    <h3 *ngIf="selected">{{ passages[rand] }}</h3>
+  <mat-card-actions>
+    <button mat-raised-button color="warn" (click)="getrandom()" *ngIf="selected">Change passage</button>
+  </mat-card-actions>
+</mat-card>
+<mat-card class="example-report-class" *ngIf="predictionValues">
+  <mat-card-header>
+      <div mat-card-avatar class="example-class-report-image"></div>
+      <mat-card-title>Accent Report</mat-card-title>
+  </mat-card-header>
+  <p *ngFor="let pre of prediction_modified">{{ pre }}</p>
+</mat-card>
+<br style="clear:left;"><br>
+<img src="https://s-media-cache-ak0.pinimg.com/originals/18/47/84/184784df749e62cdb3d0b8bea00136d3.jpg" height=200px width=200px>

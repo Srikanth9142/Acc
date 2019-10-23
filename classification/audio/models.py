@@ -30,7 +30,8 @@ class AudioManager(models.Manager):
 class AudioModel(models.Model):
    audio_file = AudioFileField(null=True, upload_to='audio/')
    timestamp = models.DateTimeField(auto_now_add=True, null=True)
-   prediction = models.CharField(max_length=70,null=True)
+   selection = models.CharField(max_length=50,null=True)
+   prediction = models.CharField(max_length=100,null=True)
    response = models.BooleanField(default = False)
    #TODO: Store user response also
    objects = AudioManager()

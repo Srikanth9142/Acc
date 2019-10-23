@@ -26,32 +26,19 @@ Audioid1=0
 class SaveAttemptAudioView(APIView):
     parser_classes = (AudioParser,)
 
-    def post(self, request):
+    def post(self, request,select):
         try:
             attempt,name = AudioModel.objects.create_attempt(request.data)
-            accent_str = predictAudio(name)
-            attempt.prediction=accent_str
+            accent_list = predictAudio(name)
+            attempt.prediction=accent_list
+            attempt.selection = select
             attempt.save()
-            global Audioid
-            Audioid = attempt.pk
-            Audioid1 = attempt.pk
-            print("Audio Id :",Audioid)
-            print("Accent is as :",attempt.prediction)
-            # create a serializer for prediction
-            # and return the prediction
-            return Response({'prediction':0}, status=201)
+            print(accent_list)
+            return Response({'prediction':attempt.prediction}, status=201)
         except Exception as e:
             print(e)
             return Response({"result":"error"}, status=400)
-def save(request):
-    return HttpResponse("hai this will save!!")
 
-def printPredict(request):
-    global Audioid1
-    pr = AudioModel.objects.filter(pk=Audioid1).values('prediction')
-    print("Printing in printPredict")
-    print(Audioid1)
-    return HttpResponse("see terminal")
 
 class PredictionView(generics.ListCreateAPIView):
     queryset = AudioModel.objects.all()

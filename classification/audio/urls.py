@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import SaveAttemptAudioView,PredictionView,printPredict
+from .views import SaveAttemptAudioView,PredictionView
 urlpatterns=[
-    path('save',SaveAttemptAudioView.as_view(),name="save"),
+    path('save/<str:select>',SaveAttemptAudioView.as_view(),name="save"),
     path('prediction',PredictionView.as_view(),name="predict"),
-    path('print',printPredict,name="print"),
     
 ]

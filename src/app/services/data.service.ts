@@ -10,13 +10,15 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
   constructor(private http:HttpClient) { }
-  saveAudio(data:any): any {
-    return this.http.post('http://127.0.0.1:8000/accent/save',data,
+  saveAudio(data:any,selection:any): any {
+    return this.http.post(`${environment.serverurl}/accent/save/${selection}`,data,
        {
           headers: {
              "Content-Type": 'application/octet-stream'
           }
        });
+       console.log('After sendig audio');
+       console.log(Response);
  }
 
  get_prediction():Observable<Prediction[]> {
