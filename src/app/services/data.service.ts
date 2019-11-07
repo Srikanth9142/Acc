@@ -10,8 +10,8 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
   constructor(private http:HttpClient) { }
-  saveAudio(data:any,selection:any): any {
-    return this.http.post(`${environment.serverurl}/accent/save/${selection}`,data,
+  saveAudio(data:any,selection:any,index:any): any {
+    return this.http.post(`${environment.serverurl}/accent/save/${selection}/${index}`,data,
        {
           headers: {
              "Content-Type": 'application/octet-stream'

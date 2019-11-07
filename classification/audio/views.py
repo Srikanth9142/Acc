@@ -9,6 +9,7 @@ from audio.serializers import PredictionSerializer
 from audio.mlcode import create_model
 from audio.mlcode import predictAccent
 from audio.mlcode import predictAudio
+from audio.mlcode import getPassage
 # Create your views here.
 """
 handle binary audio file upload that rest server is unable to parse by default
@@ -26,12 +27,13 @@ Audioid1=0
 class SaveAttemptAudioView(APIView):
     parser_classes = (AudioParser,)
 
-    def post(self, request,select):
+    def post(self, request,select,index):
         try:
             attempt,name = AudioModel.objects.create_attempt(request.data)
             accent_list = predictAudio(name)
             attempt.prediction=accent_list
             attempt.selection = select
+            attempt.Text = getPassage(index)
             attempt.save()
             print(accent_list)
             return Response({'prediction':attempt.prediction}, status=201)

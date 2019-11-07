@@ -116,7 +116,7 @@ def predictAccent(targ):
             per = (i/float(out_len))*100
             if(per>1):
                 per = "{:.2f}".format(per)+"%"
-                str_acc+=accents[l.index(i)-1]+" -->"
+                str_acc+=accents[l.index(i)-1]+" --> "
                 str_acc+=per
                 str_acc+="\n"
     return str_acc
@@ -139,6 +139,12 @@ def predictAudio(filename):
     return acc_str
 
 
-
-    
-    
+def getPassage(index):
+    passages = ['I walked along the winding trail,the dog running before me,my wife next to me,with cliffs to one side,and a river to the other.Tall grasses, as tall as me,and evergreen trees, everywhere.The wind blew gentle,as grey clouds drifted by,and I pondered existence.',
+              'Temperatures rose, sea level too.Melting glaciers flooded more land.Some struggled to reduce emissions.Others shrugged, undaunted by growing evidenceOf fires, floods, and environmental chaos.',
+              'The cat walks away, padding across the floor, its rough tongue sanding the red around its chops. Behind it, the pigeon lies in a carpet of feathers, waiting for the cleaning lady to sweep her lifeless body into the big blue dustbin. In a nest, two eggs wait for warmth.',
+              'She had attempted to ignore him, hoping he wouldn’t approach her as she stood alone in the aisle of the bookstore. He was the persistent kind, though.After approaching her, he mustered a polite smile and blinked twice.“Excuse me,” she said by way of introduction, gently fanning behind herself.',
+              'A mummy works Macy’s gift wrap counter. He told the boss he has 2,000 years in wrapping. Sometimes his hands get confused and he realizes he’s using bandages from his arm. Unspools. Starts over. Customers curse, but he isn’t bothered by curses, and he has all the time in the world.',
+              '“When will I see mommy?” Clare would ask everyday.“Before you head to bed, honey” Auntie would reply.Those words echoed in her ear as her eyes pleaded to be closed.This time,her mother made it. Just before the monitor flat-lined.Melancholy spread as Clare finally slept with a smile.'
+              ]
+    return passages[index]
